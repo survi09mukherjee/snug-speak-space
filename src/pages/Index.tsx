@@ -1,8 +1,7 @@
 import Header from "@/components/Header";
-import SystemTime from "@/components/SystemTime";
-import WeatherCard from "@/components/WeatherCard";
+import SystemOverview from "@/components/SystemOverview";
 import TrainSection from "@/components/TrainSection";
-import SystemTopology from "@/components/SystemTopology";
+import TrainAnimation from "@/components/TrainAnimation";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -11,17 +10,17 @@ const Index = () => {
       <Header />
       
       <main className="container mx-auto px-6 py-8 flex-1">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <SystemTime />
-          <WeatherCard />
+        <div className="mb-6">
+          <SystemOverview />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          <TrainSection direction="upline" />
-          <TrainSection direction="downline" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="space-y-6">
+            <TrainSection direction="upline" />
+            <TrainSection direction="downline" />
+          </div>
+          <TrainAnimation />
         </div>
-
-        <SystemTopology />
       </main>
 
       <Footer />

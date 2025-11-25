@@ -8,43 +8,23 @@ interface TrainSectionProps {
 const TrainSection = ({ direction }: TrainSectionProps) => {
   const isUpline = direction === "upline";
   
-  const trains = isUpline
-    ? [
-        {
-          trainNumber: "Train #A402",
-          destination: "Central Station",
-          status: "DELAYED" as const,
-          eta: "3 min",
-          platform: "4",
-          distance: "2.5 km",
-        },
-        {
-          trainNumber: "Train #B305",
-          destination: "North Terminal",
-          status: "DELAYED" as const,
-          eta: "8 min",
-          platform: "3",
-          distance: "5 km",
-        },
-      ]
-    : [
-        {
-          trainNumber: "Train #D201",
-          destination: "South Harbor",
-          status: "ON-TIME" as const,
-          eta: "3 min",
-          platform: "4",
-          distance: "2.5 km",
-        },
-        {
-          trainNumber: "Train #E504",
-          destination: "West Junction",
-          status: "ON-TIME" as const,
-          eta: "8 min",
-          platform: "3",
-          distance: "5 km",
-        },
-      ];
+  const train = isUpline
+    ? {
+        trainNumber: "Train #A402",
+        destination: "Central Station",
+        status: "DELAYED" as const,
+        eta: "3 min",
+        platform: "4",
+        distance: "2.5 km",
+      }
+    : {
+        trainNumber: "Train #D201",
+        destination: "South Harbor",
+        status: "ON-TIME" as const,
+        eta: "3 min",
+        platform: "4",
+        distance: "2.5 km",
+      };
 
   return (
     <div className="space-y-4">
@@ -58,11 +38,7 @@ const TrainSection = ({ direction }: TrainSectionProps) => {
           {isUpline ? "Upline" : "Downline"} Trains
         </h3>
       </div>
-      <div className="space-y-3">
-        {trains.map((train) => (
-          <TrainCard key={train.trainNumber} {...train} />
-        ))}
-      </div>
+      <TrainCard {...train} />
     </div>
   );
 };
