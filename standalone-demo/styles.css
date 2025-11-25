@@ -1,0 +1,199 @@
+/* ===== CSS Reset & Base ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    color: #ffffff;
+}
+
+/* ===== Container ===== */
+.container {
+    width: 95vw;
+    max-width: 1400px;
+    padding: 2rem;
+}
+
+.title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+    letter-spacing: -0.5px;
+}
+
+/* ===== Animation Wrapper ===== */
+.animation-wrapper {
+    position: relative;
+    width: 100%;
+    height: 600px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 24px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+        0 8px 32px 0 rgba(31, 38, 135, 0.37),
+        inset 0 0 60px rgba(102, 126, 234, 0.1);
+    overflow: hidden;
+}
+
+/* ===== SVG Tracks ===== */
+#trackSvg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.track {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.main-track {
+    stroke: #ffd700;
+    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.loop-track {
+    stroke: #00d4ff;
+    stroke-width: 3;
+    stroke-dasharray: 10 5;
+    filter: drop-shadow(0 0 6px rgba(0, 212, 255, 0.5));
+    animation: dashMove 1s linear infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+    }
+    50% {
+        filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.9));
+    }
+}
+
+@keyframes dashMove {
+    to {
+        stroke-dashoffset: -15;
+    }
+}
+
+/* ===== Trains ===== */
+.train {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s ease-out;
+    z-index: 10;
+}
+
+.train-icon {
+    font-size: 3rem;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+    animation: trainBounce 0.6s ease-in-out infinite;
+}
+
+.train-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 0.8rem;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    white-space: nowrap;
+}
+
+.train-a .train-label {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.3), rgba(118, 75, 162, 0.3));
+}
+
+.train-b .train-label {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(9, 121, 255, 0.3));
+}
+
+@keyframes trainBounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+/* ===== Info Panel ===== */
+.info-panel {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.phase-indicator {
+    display: inline-block;
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    animation: fadeInOut 1s ease-in-out;
+}
+
+@keyframes fadeInOut {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
+    .title {
+        font-size: 1.8rem;
+    }
+    
+    .animation-wrapper {
+        height: 400px;
+    }
+    
+    .train-icon {
+        font-size: 2rem;
+    }
+    
+    .train-label {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
+    }
+    
+    .phase-indicator {
+        font-size: 1rem;
+        padding: 0.8rem 1.5rem;
+    }
+}

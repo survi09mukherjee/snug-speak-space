@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Loop Animation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Dual Train Loop Animation</h1>
+        
+        <div class="animation-wrapper">
+            <svg id="trackSvg" viewBox="0 0 1000 600" xmlns="http://www.w3.org/2000/svg">
+                <!-- Main straight line (middle) -->
+                <path id="mainLine" 
+                      d="M 50 300 L 950 300" 
+                      class="track main-track"/>
+                
+                <!-- Top loop line (organic bulging curve) -->
+                <path id="topLoop" 
+                      d="M 50 300 Q 250 100, 500 100 Q 750 100, 950 300" 
+                      class="track loop-track"/>
+                
+                <!-- Bottom loop line (mirrored) -->
+                <path id="bottomLoop" 
+                      d="M 50 300 Q 250 500, 500 500 Q 750 500, 950 300" 
+                      class="track loop-track"/>
+            </svg>
+            
+            <!-- Train A (starts at left) -->
+            <div id="trainA" class="train train-a">
+                <div class="train-icon">🚂</div>
+                <div class="train-label">Train A</div>
+            </div>
+            
+            <!-- Train B (starts at right) -->
+            <div id="trainB" class="train train-b">
+                <div class="train-icon">🚆</div>
+                <div class="train-label">Train B</div>
+            </div>
+        </div>
+        
+        <div class="info-panel">
+            <div class="phase-indicator" id="phaseIndicator">Initializing...</div>
+        </div>
+    </div>
+    
+    <script src="animation.js"></script>
+</body>
+</html>
