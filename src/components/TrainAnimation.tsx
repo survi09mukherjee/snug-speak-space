@@ -2,157 +2,236 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Train } from "lucide-react";
 
+type Phase = "A-crossing" | "B-crossing";
+type LoopState = "idle" | "top-loop" | "bottom-loop";
+
 const TrainAnimation = () => {
-  const [leftTrainPos, setLeftTrainPos] = useState({ x: 10, y: 50, moving: false });
-  const [rightTrainPos, setRightTrainPos] = useState({ x: 90, y: 50, moving: false });
-  const [phase, setPhase] = useState<"leftToRight" | "rightToLeft">("leftToRight");
-  const [rightTrainLoop, setRightTrainLoop] = useState<"top" | "bottom">("top");
-  const [leftTrainLoop, setLeftTrainLoop] = useState<"top" | "bottom">("top");
+  const [phase, setPhase] = useState<Phase>("A-crossing");
+  const [trainAProgress, setTrainAProgress] = useState(0);
+  const [trainBProgress, setTrainBProgress] = useState(0);
+  const [trainALoop, setTrainALoop] = useState<LoopState>("idle");
+  const [trainBLoop, setTrainBLoop] = useState<LoopState>("idle");
+  const [trainBLoopCount, setTrainBLoopCount] = useState(0);
+  const [trainALoopCount, setTrainALoopCount] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (phase === "leftToRight") {
-        // Left train moves through middle line (left to right)
-        setLeftTrainPos((prev) => {
-          if (prev.x >= 90) {
-            // Reached right end, switch phase
-            setTimeout(() => setPhase("rightToLeft"), 1000);
-            return { x: 90, y: 50, moving: false };
+      if (phase === "A-crossing") {
+        // Train A moves left to right on middle line
+        setTrainAProgress((prev) => {
+          if (prev >= 100) {
+            // A finished crossing, switch phase
+            setPhase("B-crossing");
+            setTrainBLoopCount(0);
+            return 100;
           }
-          return { x: prev.x + 0.3, y: 50, moving: true };
+          return prev + 0.4;
         });
 
-        // Right train moves in loops
-        setRightTrainPos((prev) => {
-          const loopY = rightTrainLoop === "top" ? 25 : 75;
-          const progress = ((prev.x - 90) % 80);
+        // Train B does loops
+        setTrainBProgress((prev) => {
+          const newProgress = prev + 0.8;
           
-          if (progress <= -79) {
-            // Completed one loop, switch to other loop
-            setRightTrainLoop(current => current === "top" ? "bottom" : "top");
-            return { x: 90, y: loopY, moving: true };
+          if (newProgress >= 100) {
+            // Completed one loop
+            if (trainBLoopCount === 0) {
+              // First loop done, start second loop
+              setTrainBLoop("bottom-loop");
+              setTrainBLoopCount(1);
+              return 0;
+            } else {
+              // Both loops done
+              setTrainBLoop("idle");
+              return 0;
+            }
           }
           
-          return { x: prev.x - 0.3, y: loopY, moving: true };
+          if (trainBLoopCount === 0 && trainBLoop === "idle") {
+            setTrainBLoop("top-loop");
+          }
+          
+          return newProgress;
         });
       } else {
-        // Right train moves through middle line (right to left)
-        setRightTrainPos((prev) => {
-          if (prev.x <= 10) {
-            // Reached left end, switch phase
-            setTimeout(() => setPhase("leftToRight"), 1000);
-            return { x: 10, y: 50, moving: false };
+        // Train B moves right to left on middle line
+        setTrainBProgress((prev) => {
+          if (prev >= 100) {
+            // B finished crossing, switch phase
+            setPhase("A-crossing");
+            setTrainALoopCount(0);
+            return 100;
           }
-          return { x: prev.x - 0.3, y: 50, moving: true };
+          return prev + 0.4;
         });
 
-        // Left train moves in loops
-        setLeftTrainPos((prev) => {
-          const loopY = leftTrainLoop === "top" ? 25 : 75;
-          const progress = ((prev.x - 10) % 80);
+        // Train A does loops
+        setTrainAProgress((prev) => {
+          const newProgress = prev + 0.8;
           
-          if (progress >= 79) {
-            // Completed one loop, switch to other loop
-            setLeftTrainLoop(current => current === "top" ? "bottom" : "top");
-            return { x: 10, y: loopY, moving: true };
+          if (newProgress >= 100) {
+            // Completed one loop
+            if (trainALoopCount === 0) {
+              // First loop done, start second loop
+              setTrainALoop("bottom-loop");
+              setTrainALoopCount(1);
+              return 0;
+            } else {
+              // Both loops done
+              setTrainALoop("idle");
+              return 0;
+            }
           }
           
-          return { x: prev.x + 0.3, y: loopY, moving: true };
+          if (trainALoopCount === 0 && trainALoop === "idle") {
+            setTrainALoop("top-loop");
+          }
+          
+          return newProgress;
         });
       }
-    }, 30);
+    }, 20);
 
     return () => clearInterval(interval);
-  }, [phase, rightTrainLoop, leftTrainLoop]);
+  }, [phase, trainBLoop, trainALoop, trainBLoopCount, trainALoopCount]);
+
+  // Calculate positions
+  const getTrainAPosition = () => {
+    if (phase === "A-crossing") {
+      // Moving on middle line left to right
+      return { x: 10 + (trainAProgress * 0.8), y: 50 };
+    } else {
+      // Doing loops
+      if (trainALoop === "top-loop") {
+        const loopX = 10 + (trainAProgress * 0.8);
+        const loopY = 25 + Math.sin((trainAProgress / 100) * Math.PI) * 5;
+        return { x: loopX, y: loopY };
+      } else if (trainALoop === "bottom-loop") {
+        const loopX = 10 + (trainAProgress * 0.8);
+        const loopY = 75 - Math.sin((trainAProgress / 100) * Math.PI) * 5;
+        return { x: loopX, y: loopY };
+      }
+      return { x: 10, y: 50 };
+    }
+  };
+
+  const getTrainBPosition = () => {
+    if (phase === "B-crossing") {
+      // Moving on middle line right to left
+      return { x: 90 - (trainBProgress * 0.8), y: 50 };
+    } else {
+      // Doing loops
+      if (trainBLoop === "top-loop") {
+        const loopX = 90 - (trainBProgress * 0.8);
+        const loopY = 25 + Math.sin((trainBProgress / 100) * Math.PI) * 5;
+        return { x: loopX, y: loopY };
+      } else if (trainBLoop === "bottom-loop") {
+        const loopX = 90 - (trainBProgress * 0.8);
+        const loopY = 75 - Math.sin((trainBProgress / 100) * Math.PI) * 5;
+        return { x: loopX, y: loopY };
+      }
+      return { x: 90, y: 50 };
+    }
+  };
+
+  const trainAPos = getTrainAPosition();
+  const trainBPos = getTrainBPosition();
+
+  const trainAOnMiddle = phase === "A-crossing";
+  const trainBOnMiddle = phase === "B-crossing";
 
   return (
-    <Card className="p-6 border-border/30 bg-card/60 backdrop-blur-sm h-full">
-      <div className="space-y-4 h-full flex flex-col">
+    <Card className="p-6 border-border/30 bg-card/60 backdrop-blur-sm">
+      <div className="space-y-4">
         <p className="text-xs text-muted-foreground uppercase tracking-widest">Train Movement Visualization</p>
         
-        <div className="relative flex-1 min-h-[400px] bg-background/30 rounded-lg border border-border/20 overflow-hidden">
-          {/* Track Lines using SVG */}
-          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <div className="relative w-full h-[300px] bg-background/30 rounded-lg border border-border/20 overflow-hidden">
+          {/* Closed Circuit Track Lines */}
+          <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+            {/* Left vertical connectors */}
+            <line x1="10" y1="25" x2="10" y2="50" stroke="hsl(var(--primary))" strokeWidth="0.3" opacity="0.6" />
+            <line x1="10" y1="50" x2="10" y2="75" stroke="hsl(var(--primary))" strokeWidth="0.3" opacity="0.6" />
+            
+            {/* Right vertical connectors */}
+            <line x1="90" y1="25" x2="90" y2="50" stroke="hsl(var(--primary))" strokeWidth="0.3" opacity="0.6" />
+            <line x1="90" y1="50" x2="90" y2="75" stroke="hsl(var(--primary))" strokeWidth="0.3" opacity="0.6" />
+            
             {/* Top Loop Line */}
             <path
-              d="M 10 25 Q 30 20, 50 20 Q 70 20, 90 25"
+              d="M 10 25 Q 30 18, 50 18 Q 70 18, 90 25"
               fill="none"
               stroke="hsl(var(--primary))"
-              strokeWidth="0.3"
-              opacity="0.6"
+              strokeWidth="0.4"
+              opacity="0.7"
             />
             
             {/* Middle Through Line */}
             <line
-              x1="10"
-              y1="50"
-              x2="90"
-              y2="50"
+              x1="10" y1="50" x2="90" y2="50"
               stroke="hsl(var(--success))"
-              strokeWidth="0.4"
-              opacity="0.8"
+              strokeWidth="0.5"
+              opacity="0.9"
             />
             
             {/* Bottom Loop Line */}
             <path
-              d="M 10 75 Q 30 80, 50 80 Q 70 80, 90 75"
+              d="M 10 75 Q 30 82, 50 82 Q 70 82, 90 75"
               fill="none"
               stroke="hsl(var(--primary))"
-              strokeWidth="0.3"
-              opacity="0.6"
+              strokeWidth="0.4"
+              opacity="0.7"
             />
           </svg>
 
-          {/* Left Train */}
+          {/* Train A (Left side - Green) */}
           <div
-            className="absolute transition-all duration-100 ease-linear"
+            className="absolute transition-all duration-75 ease-linear"
             style={{
-              left: `${leftTrainPos.x}%`,
-              top: `${leftTrainPos.y}%`,
+              left: `${trainAPos.x}%`,
+              top: `${trainAPos.y}%`,
               transform: 'translate(-50%, -50%)',
             }}
           >
             <div className={`flex items-center gap-1 px-2 py-1 rounded backdrop-blur-sm ${
-              leftTrainPos.y === 50 
-                ? "bg-success/40 border border-success shadow-lg shadow-success/50" 
-                : "bg-primary/40 border border-primary shadow-lg shadow-primary/50"
+              trainAOnMiddle
+                ? "bg-success/50 border border-success shadow-lg shadow-success/50" 
+                : "bg-primary/50 border border-primary shadow-md shadow-primary/40"
             }`}>
-              <Train className={`w-4 h-4 ${leftTrainPos.y === 50 ? "text-success" : "text-primary"} ${leftTrainPos.moving ? "animate-pulse" : ""}`} />
-              <span className={`text-xs font-mono font-bold ${leftTrainPos.y === 50 ? "text-success" : "text-primary"}`}>A402</span>
+              <Train className={`w-4 h-4 ${trainAOnMiddle ? "text-success" : "text-primary"} animate-pulse`} />
+              <span className={`text-xs font-mono font-bold ${trainAOnMiddle ? "text-success" : "text-primary"}`}>A402</span>
             </div>
           </div>
 
-          {/* Right Train */}
+          {/* Train B (Right side - Blue) */}
           <div
-            className="absolute transition-all duration-100 ease-linear"
+            className="absolute transition-all duration-75 ease-linear"
             style={{
-              left: `${rightTrainPos.x}%`,
-              top: `${rightTrainPos.y}%`,
+              left: `${trainBPos.x}%`,
+              top: `${trainBPos.y}%`,
               transform: 'translate(-50%, -50%)',
             }}
           >
             <div className={`flex items-center gap-1 px-2 py-1 rounded backdrop-blur-sm ${
-              rightTrainPos.y === 50 
-                ? "bg-info/40 border border-info shadow-lg shadow-info/50" 
-                : "bg-primary/40 border border-primary shadow-lg shadow-primary/50"
+              trainBOnMiddle
+                ? "bg-info/50 border border-info shadow-lg shadow-info/50" 
+                : "bg-primary/50 border border-primary shadow-md shadow-primary/40"
             }`}>
-              <Train className={`w-4 h-4 ${rightTrainPos.y === 50 ? "text-info" : "text-primary"} ${rightTrainPos.moving ? "animate-pulse" : ""}`} />
-              <span className={`text-xs font-mono font-bold ${rightTrainPos.y === 50 ? "text-info" : "text-primary"}`}>D201</span>
+              <Train className={`w-4 h-4 ${trainBOnMiddle ? "text-info" : "text-primary"} animate-pulse`} />
+              <span className={`text-xs font-mono font-bold ${trainBOnMiddle ? "text-info" : "text-primary"}`}>D201</span>
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-4 text-xs">
-          <div>
-            <p className="text-muted-foreground uppercase mb-1">Train A402 Status</p>
+          <div className="space-y-1">
+            <p className="text-muted-foreground uppercase">Train A402 Status</p>
             <p className="font-semibold text-success">
-              {leftTrainPos.y === 50 ? "THROUGH LINE" : leftTrainLoop === "top" ? "TOP LOOP" : "BOTTOM LOOP"}
+              {trainAOnMiddle ? "THROUGH LINE (L→R)" : trainALoop === "top-loop" ? "TOP LOOP" : trainALoop === "bottom-loop" ? "BOTTOM LOOP" : "STANDBY"}
             </p>
           </div>
-          <div>
-            <p className="text-muted-foreground uppercase mb-1">Train D201 Status</p>
+          <div className="space-y-1">
+            <p className="text-muted-foreground uppercase">Train D201 Status</p>
             <p className="font-semibold text-info">
-              {rightTrainPos.y === 50 ? "THROUGH LINE" : rightTrainLoop === "top" ? "TOP LOOP" : "BOTTOM LOOP"}
+              {trainBOnMiddle ? "THROUGH LINE (R→L)" : trainBLoop === "top-loop" ? "TOP LOOP" : trainBLoop === "bottom-loop" ? "BOTTOM LOOP" : "STANDBY"}
             </p>
           </div>
         </div>
