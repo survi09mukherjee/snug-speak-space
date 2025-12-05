@@ -1,21 +1,66 @@
 import { Card } from "@/components/ui/card";
 
+// Station data from database
+const stations = [
+  {
+    id: "cbe",
+    name: "Coimbatore Junction",
+    code: "CBE",
+    coordinates: { lat: 11.018, lng: 76.970 }
+  },
+  {
+    id: "cbf",
+    name: "Coimbatore North Junction",
+    code: "CBF",
+    coordinates: { lat: 11.039, lng: 76.983 }
+  },
+  {
+    id: "ptj",
+    name: "Podanur Junction",
+    code: "PTJ",
+    coordinates: { lat: 10.974, lng: 76.933 }
+  },
+  {
+    id: "shi",
+    name: "Singanallur",
+    code: "SHI",
+    coordinates: { lat: 11.005, lng: 76.991 }
+  }
+];
+
+// Sample train data (trains array is empty in DB, using sample data)
+const trainA = {
+  name: "Express 12675",
+  location: "KM 45.2",
+  nearbyStation: stations[0], // Coimbatore Junction
+};
+
+const trainB = {
+  name: "Local 56324",
+  location: "KM 78.6",
+  nearbyStation: stations[2], // Podanur Junction
+};
+
+// Calculate approximate distance between stations (Haversine formula simplified)
+const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
+  const R = 6371; // Earth's radius in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng/2) * Math.sin(dLng/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+};
+
+const distanceBetween = calculateDistance(
+  trainA.nearbyStation.coordinates.lat,
+  trainA.nearbyStation.coordinates.lng,
+  trainB.nearbyStation.coordinates.lat,
+  trainB.nearbyStation.coordinates.lng
+).toFixed(1);
+
 const TrainAnimation = () => {
-  // Train data
-  const trainA = {
-    name: "Express 101",
-    location: "KM 45.2",
-    nearbyStation: "Central Junction",
-  };
-
-  const trainB = {
-    name: "Local 204",
-    location: "KM 78.6",
-    nearbyStation: "East Terminal",
-  };
-
-  const distanceBetween = "33.4 KM";
-
   return (
     <Card className="p-6 border-border/30 bg-card/60 backdrop-blur-sm">
       <div className="space-y-4">
@@ -98,7 +143,7 @@ const TrainAnimation = () => {
                 {trainA.location}
               </div>
               <div className="text-[10px] text-muted-foreground">
-                Near: {trainA.nearbyStation}
+                Near: {trainA.nearbyStation.name} ({trainA.nearbyStation.code})
               </div>
             </div>
           </div>
@@ -117,7 +162,7 @@ const TrainAnimation = () => {
                 {trainB.location}
               </div>
               <div className="text-[10px] text-muted-foreground">
-                Near: {trainB.nearbyStation}
+                Near: {trainB.nearbyStation.name} ({trainB.nearbyStation.code})
               </div>
             </div>
           </div>
@@ -128,7 +173,7 @@ const TrainAnimation = () => {
             style={{ left: "50%", top: "50%", transform: "translate(-50%, -100%)" }}
           >
             <div className="text-sm font-bold px-4 py-2 bg-destructive/20 backdrop-blur-sm rounded-lg border border-destructive/30 text-destructive">
-              Distance: {distanceBetween}
+              Distance: {distanceBetween} KM
             </div>
           </div>
         </div>
