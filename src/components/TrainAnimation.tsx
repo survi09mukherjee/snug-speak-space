@@ -62,13 +62,13 @@ const distanceBetween = calculateDistance(
 
 const TrainAnimation = () => {
   return (
-    <Card className="p-6 border-border/30 bg-card/60 backdrop-blur-sm">
-      <div className="space-y-4">
+    <Card className="p-3 border-border/30 bg-card/60 backdrop-blur-sm flex-1">
+      <div className="space-y-2 h-full flex flex-col">
         <h3 className="text-xs text-muted-foreground uppercase tracking-widest">
           Track Overview
         </h3>
 
-        <div className="relative w-full h-[400px] bg-background/50 rounded-lg overflow-hidden border border-border/20">
+        <div className="relative w-full flex-1 min-h-[180px] bg-background/50 rounded-lg overflow-hidden border border-border/20">
           <svg
             className="w-full h-full"
             viewBox="0 0 1000 600"
@@ -131,38 +131,38 @@ const TrainAnimation = () => {
 
           {/* Train A - Left side */}
           <div
-            className="absolute flex flex-col items-center gap-1 z-10"
-            style={{ left: "15%", top: "50%", transform: "translate(-50%, -50%)" }}
+            className="absolute flex flex-col items-center z-10"
+            style={{ left: "12%", top: "50%", transform: "translate(-50%, -50%)" }}
           >
-            <div className="text-3xl filter drop-shadow-lg">🚂</div>
-            <div className="text-center mt-2 space-y-1">
-              <div className="text-xs font-bold px-3 py-1 bg-primary/20 backdrop-blur-sm rounded border border-primary/30 text-primary">
+            <div className="text-xl filter drop-shadow-lg">🚂</div>
+            <div className="text-center mt-1 space-y-0.5">
+              <div className="text-[10px] font-bold px-2 py-0.5 bg-primary/20 backdrop-blur-sm rounded border border-primary/30 text-primary">
                 {trainA.name}
               </div>
-              <div className="text-[10px] text-muted-foreground">
+              <div className="text-[8px] text-muted-foreground">
                 {trainA.location}
               </div>
-              <div className="text-[10px] text-muted-foreground">
-                Near: {trainA.nearbyStation.name} ({trainA.nearbyStation.code})
+              <div className="text-[8px] text-muted-foreground">
+                Near: {trainA.nearbyStation.code}
               </div>
             </div>
           </div>
 
           {/* Train B - Right side */}
           <div
-            className="absolute flex flex-col items-center gap-1 z-10"
-            style={{ left: "85%", top: "50%", transform: "translate(-50%, -50%)" }}
+            className="absolute flex flex-col items-center z-10"
+            style={{ left: "88%", top: "50%", transform: "translate(-50%, -50%)" }}
           >
-            <div className="text-3xl filter drop-shadow-lg transform scale-x-[-1]">🚂</div>
-            <div className="text-center mt-2 space-y-1">
-              <div className="text-xs font-bold px-3 py-1 bg-accent/20 backdrop-blur-sm rounded border border-accent/30 text-accent">
+            <div className="text-xl filter drop-shadow-lg transform scale-x-[-1]">🚂</div>
+            <div className="text-center mt-1 space-y-0.5">
+              <div className="text-[10px] font-bold px-2 py-0.5 bg-accent/20 backdrop-blur-sm rounded border border-accent/30 text-accent">
                 {trainB.name}
               </div>
-              <div className="text-[10px] text-muted-foreground">
+              <div className="text-[8px] text-muted-foreground">
                 {trainB.location}
               </div>
-              <div className="text-[10px] text-muted-foreground">
-                Near: {trainB.nearbyStation.name} ({trainB.nearbyStation.code})
+              <div className="text-[8px] text-muted-foreground">
+                Near: {trainB.nearbyStation.code}
               </div>
             </div>
           </div>
@@ -170,9 +170,9 @@ const TrainAnimation = () => {
           {/* Distance indicator in center */}
           <div
             className="absolute z-10"
-            style={{ left: "50%", top: "50%", transform: "translate(-50%, -100%)" }}
+            style={{ left: "50%", top: "50%", transform: "translate(-50%, -80%)" }}
           >
-            <div className="text-sm font-bold px-4 py-2 bg-destructive/20 backdrop-blur-sm rounded-lg border border-destructive/30 text-destructive">
+            <div className="text-xs font-bold px-3 py-1 bg-destructive/20 backdrop-blur-sm rounded-lg border border-destructive/30 text-destructive">
               Distance: {distanceBetween} KM
             </div>
           </div>
