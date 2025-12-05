@@ -129,10 +129,10 @@ const TrainAnimation = () => {
             />
           </svg>
 
-          {/* Train A - Left side */}
+          {/* Train A - Left side on through line */}
           <div
             className="absolute flex flex-col items-center gap-1 z-10"
-            style={{ left: "15%", top: "50%", transform: "translate(-50%, -50%)" }}
+            style={{ left: "25%", top: "50%", transform: "translate(-50%, -50%)" }}
           >
             <div className="text-3xl filter drop-shadow-lg">🚂</div>
             <div className="text-center mt-2 space-y-1">
@@ -148,10 +148,10 @@ const TrainAnimation = () => {
             </div>
           </div>
 
-          {/* Train B - Right side */}
+          {/* Train B - Right side on through line */}
           <div
             className="absolute flex flex-col items-center gap-1 z-10"
-            style={{ left: "85%", top: "50%", transform: "translate(-50%, -50%)" }}
+            style={{ left: "75%", top: "50%", transform: "translate(-50%, -50%)" }}
           >
             <div className="text-3xl filter drop-shadow-lg transform scale-x-[-1]">🚂</div>
             <div className="text-center mt-2 space-y-1">
