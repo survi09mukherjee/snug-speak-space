@@ -28,15 +28,15 @@ const stations = [
   }
 ];
 
-// Sample train data (trains array is empty in DB, using sample data)
+// Train data referencing stations
 const trainA = {
-  name: "Express 12675",
+  name: "12675 Kovai Express",
   location: "KM 45.2",
   nearbyStation: stations[0], // Coimbatore Junction
 };
 
 const trainB = {
-  name: "Local 56324",
+  name: "56324 Coimbatore Local",
   location: "KM 78.6",
   nearbyStation: stations[2], // Podanur Junction
 };
